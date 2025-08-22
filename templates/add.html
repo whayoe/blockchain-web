@@ -1,0 +1,74 @@
+<!-- templates/add.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tambah Transaksi</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f7f7f7; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; text-align: center; }
+        label { font-weight: bold; color: #555; display: block; margin: 10px 0 5px; }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .example { font-size: 14px; color: #666; margin: 10px 0; }
+        .error { color: red; font-weight: bold; background: #ffebee; padding: 10px; border-radius: 5px; }
+        .success { color: green; font-weight: bold; }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #45a049; }
+        a { color: #2196F3; text-decoration: none; margin: 20px 0; display: inline-block; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>➕ Tambah Transaksi</h2>
+
+        <!-- Tampilkan pesan error jika ada -->
+        {% if error %}
+            <div class="error">❌ {{ error }}</div>
+        {% endif %}
+
+        <!-- Tampilkan pesan sukses jika ada -->
+        {% if success %}
+            <div class="success">✅ {{ success }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <label for="transaction">Transaksi:</label>
+            <input type="text" 
+                   name="transaction" 
+                   id="transaction" 
+                   placeholder="Contoh: Andi -> Budi: Rp10000" 
+                   required>
+
+            <p class="example">
+                Format harus: <strong>Nama -> Nama: RpJumlah</strong><br>
+                Contoh benar: <code>WAHYU -> ANDI: Rp5000</code>
+            </p>
+
+            <button type="submit">Tambah & Tambang!</button>
+        </form>
+
+        <a href="/">« Kembali ke Blockchain</a>
+    </div>
+</body>
+</html>

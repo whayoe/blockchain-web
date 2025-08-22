@@ -1,0 +1,146 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+{% block title %}Blockchain - Beranda{% endblock %}
+
+{% block content %}
+<h1>🌐 Blockchain Whayoe</h1>
+
+<a href="/add" class="btn">➕ Tambah Transaksi</a>
+{% if logged_in %}
+    <a href="/topup" class="btn">💵 Top Up Saldo</a>
+	<a href="/logout" class="btn">🚪 Logout</a>
+{% else %}
+    <a href="/login" class="btn">🔐 Login</a>
+{% endif %}
+
+<p>Status: 
+    <span style="color: {{ 'green' if valid else 'red' }}; font-weight: bold;">
+        {{ 'Blockchain VALID ✅' if valid else 'Blockchain RUSAK ❌' }}
+    </span>
+</p>
+
+<!-- Daftar Blok -->
+{% for block in chain %}
+<div style="border:1px solid rgba(0,243,255,0.3); padding:15px; margin:10px 0; border-radius:8px;">
+    <strong>Blok #{{ block.index }}</strong><br>
+    📝 {{ block.transactions }}<br>
+    ⏰ {{ block.timestamp }}<br>
+    🔗 {{ block.previous_hash[:50] }}...<br>
+    🔐 {{ block.hash[:50] }}...<br>
+    🔢 Nonce: {{ block.nonce }}
+</div>
+{% endfor %}
+
+<!-- Tabel Saldo -->
+<h2>💰 Saldo Pengguna</h2>
+<table border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse:collapse;">
+    <tr style="background:rgba(0,243,255,0.1);">
+        <th>Pengguna</th>
+        <th>Saldo</th>
+    </tr>
+    {% set balances = bc.calculate_balances() %}
+    {% for name, amount in balances.items() %}
+    <tr>
+        <td><strong>{{ name }}</strong></td>
+        <td style="color: {% if amount >= 0 %}#00f3ff{% else %}#ff5722{% endif %}; font-weight:bold;">
+            Rp{{ "{:,}".format(amount) }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Grafik Saldo -->
+<h2>📊 Grafik Saldo Pengguna</h2>
+<div style="width: 100%; max-width: 800px; margin: 20px auto;">
+    <canvas id="balanceChart"></canvas>
+</div>
+
+<script>
+    // Ambil data dari Flask (diteruskan ke JavaScript)
+    const balances = {{ bc.calculate_balances() | tojson }};
+    const labels = Object.keys(balances);
+    const data = Object.values(balances);
+
+    // Warna berdasarkan tema
+    function getBarColor() {
+        return document.body.classList.contains('dark-mode') 
+            ? 'rgba(76, 175, 80, 0.8)'     // Hijau (Dark Mode)
+            : 'rgba(0, 243, 255, 0.8)';   // Biru Elektrik
+    }
+
+    // Buat grafik
+    const ctx = document.getElementById('balanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Saldo (Rp)',
+                data: data,
+                backgroundColor: getBarColor(),
+                borderColor: getBarColor().replace('0.8', '1'),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: document.body.classList.contains('dark-mode') ? '#e0e0e0' : '#00f3ff'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Rp${context.raw.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        color: document.body.classList.contains('dark-mode') ? '#ccc' : '#a0e8ff',
+                        callback: function(value) {
+                            return 'Rp' + value.toLocaleString();
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: document.body.classList.contains('dark-mode') ? '#ccc' : '#a0e8ff'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Update warna saat ganti tema
+    function updateChartColors(chart) {
+        const isDark = document.body.classList.contains('dark-mode');
+        const color = isDark ? 'rgba(76, 175, 80, 0.8)' : 'rgba(0, 243, 255, 0.8)';
+        chart.data.datasets[0].backgroundColor = color;
+        chart.data.datasets[0].borderColor = color.replace('0.8', '1');
+        chart.options.plugins.legend.labels.color = isDark ? '#e0e0e0' : '#00f3ff';
+        chart.options.scales.y.ticks.color = isDark ? '#ccc' : '#a0e8ff';
+        chart.options.scales.x.ticks.color = isDark ? '#ccc' : '#a0e8ff';
+        chart.update();
+    }
+
+    // Dengarkan perubahan tema
+    const observer = new MutationObserver(() => {
+        if (window.myChart) {
+            updateChartColors(window.myChart);
+        }
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>
+{% endblock %}

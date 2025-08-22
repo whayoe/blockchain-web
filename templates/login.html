@@ -1,0 +1,30 @@
+<!-- templates/login.html -->
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<h2>🔐 Login ke Blockchain</h2>
+
+{% if error %}
+    <p style="color:red; background:#330000; padding:10px; border-radius:5px;">
+        ❌ {{ error }}
+    </p>
+{% endif %}
+
+<form method="POST" style="max-width:400px; margin:auto;">
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" placeholder="Masukkan username" required
+           style="width:100%; padding:10px; margin:10px 0; border:1px solid var(--border); border-radius:5px; background:rgba(0,0,0,0.3); color:var(--text);">
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" placeholder="Masukkan password" required
+           style="width:100%; padding:10px; margin:10px 0; border:1px solid var(--border); border-radius:5px; background:rgba(0,0,0,0.3); color:var(--text);">
+
+    <button type="submit" class="btn" style="width:100%; margin-top:20px;">Login</button>
+</form>
+
+<p style="text-align:center; margin:20px 0;">
+    <a href="/forgot_password" style="color:#ff9800; text-decoration:underline;">Lupa Password?</a> |
+    <a href="/" class="btn">Beranda</a>
+</p>
+{% endblock %}

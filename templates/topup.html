@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Top Up Saldo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f7f7f7; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; text-align: center; }
+        label { font-weight: bold; color: #555; display: block; margin: 10px 0 5px; }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .error { color: red; font-weight: bold; background: #ffebee; padding: 10px; border-radius: 5px; }
+        .success { color: green; font-weight: bold; }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #45a049; }
+        a { color: #2196F3; text-decoration: none; margin: 20px 0; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>💵 Top Up Saldo</h2>
+
+        {% if error %}
+            <div class="error">❌ {{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+            <div class="success">✅ {{ success }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <label for="amount">Jumlah Uang (Rp):</label>
+            <input type="number" name="amount" id="amount" placeholder="Contoh: 50000" required min="1">
+
+            <button type="submit">Top Up!</button>
+        </form>
+
+        <a href="/">« Kembali ke Blockchain</a>
+    </div>
+</body>
+</html>
